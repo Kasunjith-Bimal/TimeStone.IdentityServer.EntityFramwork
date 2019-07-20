@@ -1,5 +1,71 @@
 # TimeStone.IdentityServer.EntityFramwork
 Identity Server with Database 
+
+# Identity Server Configuration 
+
+### Go https://github.com/Kasunjith-Bimal/TimeStone.IdentityServer.EntityFramwork/blob/master/TimeStone.IdentityServer/Config.cs
+
+Replace your MVC application Url - http://localhost:3728 (Change RedirectUris and PostLogoutRedirectUris)
+
+```
+        public static IEnumerable<Client> GetClients()
+        {
+            return new[]
+            {
+                new Client
+                {
+                    ClientId ="mvc",
+                    ClientName="Mvc Demo",
+                    AllowedGrantTypes = GrantTypes.Hybrid,
+                    RedirectUris ={ "http://localhost:3728/signin-oidc" },
+                    AllowedScopes={ "openid","email","profile","API1"},
+                    PostLogoutRedirectUris = { "http://localhost:3728/signout-callback-oidc" },
+                    ClientSecrets ={new Secret("secret".Sha256()) }  
+                }
+               
+            };
+        }
+```
+### Go https://github.com/Kasunjith-Bimal/TimeStone.IdentityServer.EntityFramwork/blob/master/TimeStone.Mvc/Startup.cs
+
+Replace your Identity Server Url - http://localhost:5000 (Change options.Authority = "http://localhost:5000";)
+
+```
+services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = "Cookies";
+                options.DefaultChallengeScheme = "oidc";
+            }).AddCookie("Cookies")
+           .AddOpenIdConnect("oidc", options =>
+           {
+               options.SignInScheme = "Cookies";
+               options.RequireHttpsMetadata = false;
+               options.Authority = "http://localhost:5000";
+               options.ClientId = "mvc";
+               options.ClientSecret = "secret";
+               options.ResponseType = "code id_token";
+               options.Scope.Add("openid");
+               options.Scope.Add("email");
+               options.Scope.Add("profile");
+               options.Scope.Add("API1");
+               options.SaveTokens = true;
+           });
+ ```
+ 
+ ### Go https://github.com/Kasunjith-Bimal/TimeStone.IdentityServer.EntityFramwork/blob/master/TimeStone.Api/Startup.cs
+ Replace your Identity Server Url - http://localhost:5000 (Change  options.Authority = "http://localhost:5000";)
+ 
+ ```
+             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+          .AddJwtBearer(options =>
+          {
+              options.Audience = "API1";
+              options.Authority = "http://localhost:5000";
+              options.RequireHttpsMetadata = false;
+          });
+
+ ```
+
 # Restore Application 
 ```
 dotnet restore 
