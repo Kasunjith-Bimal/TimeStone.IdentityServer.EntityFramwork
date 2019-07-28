@@ -24,7 +24,10 @@ namespace TimeStone.IdentityServer
         {
             return new ApiResource[]
             {
-                  new ApiResource("API1","My Demo API")
+                new ApiResource("API Resouces", "My Demo API")
+                {
+                    Scopes = {new Scope("API1") }
+                }
             };
         }
 
@@ -41,8 +44,21 @@ namespace TimeStone.IdentityServer
                     AllowedScopes={ "openid","email","profile","API1"},
                     PostLogoutRedirectUris = { "http://localhost:3728/signout-callback-oidc" },
                     ClientSecrets ={new Secret("secret".Sha256()) }  
+                },
+                 new Client {
+                    RequireConsent = false,
+                    ClientId = "angular_spa",
+                    ClientName = "Angular SPA",
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                    AllowedScopes = { "openid", "profile", "email", "API1" },
+                    RedirectUris = {"http://localhost:4200/callback.html"},
+                    PostLogoutRedirectUris = {"http://localhost:4200/signout-callback.html"},
+                    AllowedCorsOrigins = {"http://localhost:4200"},
+                    AllowAccessTokensViaBrowser = true,
+                    AccessTokenLifetime = 3600,
+                   
                 }
-               
+
             };
         }
     }
