@@ -6,6 +6,7 @@ Identity Server with Database
 ### Go https://github.com/Kasunjith-Bimal/TimeStone.IdentityServer.EntityFramwork/blob/master/TimeStone.IdentityServer/Config.cs
 
 Replace your MVC application Url - http://localhost:3728 (Change RedirectUris and PostLogoutRedirectUris)
+Replace your Angualr application Url - http://localhost:4200 (Change RedirectUris and PostLogoutRedirectUris)
 
 ```
         public static IEnumerable<Client> GetClients()
@@ -21,11 +22,26 @@ Replace your MVC application Url - http://localhost:3728 (Change RedirectUris an
                     AllowedScopes={ "openid","email","profile","API1"},
                     PostLogoutRedirectUris = { "http://localhost:3728/signout-callback-oidc" },
                     ClientSecrets ={new Secret("secret".Sha256()) }  
+                },
+                 new Client {
+                    RequireConsent = false,
+                    ClientId = "angular_spa",
+                    ClientName = "Angular SPA",
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                    AllowedScopes = { "openid", "profile", "email", "API1" },
+                    RedirectUris = {"http://localhost:4200/callback.html"},
+                    PostLogoutRedirectUris = {"http://localhost:4200/signout-callback.html"},
+                    AllowedCorsOrigins = {"http://localhost:4200"},
+                    AllowAccessTokensViaBrowser = true,
+                    AccessTokenLifetime = 3600,
+                   
                 }
                
             };
         }
 ```
+
+
 ### Go https://github.com/Kasunjith-Bimal/TimeStone.IdentityServer.EntityFramwork/blob/master/TimeStone.Mvc/Startup.cs
 
 Replace your Identity Server Url - http://localhost:5000 (Change options.Authority = "http://localhost:5000";)
